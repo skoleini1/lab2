@@ -1,0 +1,65 @@
+Summary:
+To add a user in Unix/Linux OS, the command is "useradd {username}" this should always be run by root or a sudo user.
+
+To get the complete list of users present in the Unix/Linux OS we need to query a system file contents, the file which 
+contains the entire list of users in the OS is "/etc/passwd" when we query this file using "cat /etc/passwd" we will
+get the entire list of users. 
+
+This list includes both system users and normal users, to differentiate between them, we 
+can query using "grep" by checking if "bash" is present or not.
+
+Algorithm:
+
+a) addUser:
+   
+   Input: username to be added
+   Processing: sudo() Fabric API is used 
+   Output: If success then Done is displayed
+           If failed then Aborting is displayed
+
+   1. Run the linux command "useradd {username}" Eg: useradd skolenki1 from a sudo fabric function sudo()
+   2. Success or Failure is automatically displayed by the fabric.
+   3. If the user entered in the #1 is already present on the server then it errors out too.
+
+b) findUser:
+
+   Input: username to be found
+   Processing: run() Fabric API is used 
+   Output: If success then "Found user {user} on the system." is displayed to the user
+           If failed then "User {user} is not on the system." is displayed to the user
+
+   1. Run the linux command "cat /etc/passwd" from a run fabric function run()
+   2. Create a empty list to store all the users from the system
+   3. If we use split() to this response in step #1, then we get a list of entries, again split this entry with ":" i.e., split(":") and get the first string [0].
+   4. This string will be the username which we append to a list in step #2
+   5. At the end of the loop we will have a list with all the users present on the server
+   6. We check if the user name provided in the function is present in this list or not
+   7. If not present then we error out, if present we inform the user that his username is present
+
+c) listUsers:
+   
+   Input: None
+   Processing: run() Fabric API is used 
+   Output: list of non system users are displayed as a list
+
+   1. Run the linux command "cat /etc/passwd | grep bash"
+   2. Create a empty list to store all the users from the system
+   3. If we use split() to this response in step #1, then we get a list of entries, again split this entry with ":" i.e., split(":") and get the first string [0].
+   4. This string will be the username which we append to a list in step #2
+   5. At the end of the loop we will have a list with all the users present on the server
+   6. In step #1, since we grep it using "bash" we get only bash users from the system which will be stored in the list we created in step #2
+   7. Display this list which we created in step #2 now which displays the list of non system users present on the server.
+
+c) listSysUsers:
+
+   Input: None
+   Processing: run() Fabric API is used 
+   Output: list of system users are displayed as a list
+
+   1. Run the linux command "cat /etc/passwd | grep -v bash"
+   2. Create a empty list to store all the users from the system
+   3. If we use split() to this response in step #1, then we get a list of entries, again split this entry with ":" i.e., split(":") and get the first string [0].
+   4. This string will be the username which we append to a list in step #2
+   5. At the end of the loop we will have a list with all the users present on the server
+   6. In step #1, since we grep it using "-v bash" we get only non bash users from the system which will be stored in the list we created in step #2
+   7. Display this list which we created in step #2 now which displays the list of only system users present on the server.
